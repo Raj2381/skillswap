@@ -1,0 +1,15 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { CalendarDays } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
+import { card, CreatorShell, SectionTitle } from '@/components/creator/creator-shell'
+
+type Project = { id: string; title: string; budget: number; deadline: string; progress: number; status: string }
+
+export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([]); const [filter, setFilter] = useState('all'); const [loading, setLoading] = useState(true); const [error, setError] = useState('')
+  useEffect(() => { const load = async () => { const supabase = createClient(); const { data: { user } } = await supabase.auth.getUser(); if (!user) return; const { data, error: queryError } = await supabase.from('projects').select('id,title,budget,deadline,progress,status').eq('creator_id', user.id).order('created_at', { ascending: false }); if (queryError) { console.error('Creator projects error:', queryError); setError('Projects could not be loaded.') } else setProjects((data ?? []) as Project[]); setLoading(false) }; void load() }, [])
+  const visible = projects.filter(project => filter === 'all' || (filter === 'active' && ['accepted', 'in_progress', 'delivered'].includes(project.status)) || project.status === filter)
+  return <CreatorShell><div className="flex justify-between gap-4"><SectionTitle title="My Projects" subtitle="Track the projects you&apos;re currently working on." /></div><div className="mb-6 flex flex-wrap gap-2">{['all', 'active', 'completed', 'cancelled'].map(value => <button key={value} onClick={() => setFilter(value)} className={`rounded-full px-4 py-2 text-xs font-semibold capitalize ${filter === value ? 'bg-rose-500/20 text-rose-200' : 'bg-rose-300/10 text-[#b8aec9]'}`}>{value}</button>)}</div>{error && <p role="alert" className="mb-5 rounded-xl bg-rose-500/10 p-4 text-sm text-rose-200">{error}</p>}{loading ? <div className="grid gap-4 lg:grid-cols-2"><div className="h-48 animate-pulse rounded-2xl bg-[#32131f]" /><div className="h-48 animate-pulse rounded-2xl bg-[#32131f]" /></div> : visible.length ? <div className="grid gap-4 lg:grid-cols-2">{visible.map(project => <article key={project.id} className={card}><div className="flex items-start justify-between gap-3"><div><h2 className="text-sm font-semibold text-white">{project.title}</h2><p className="mt-2 text-xs text-[#b8aec9]">₹{Number(project.budget).toLocaleString('en-IN')}</p></div><span className="rounded-full bg-rose-400/10 px-2.5 py-1 text-[10px] capitalize text-rose-200">{project.status.replace('_', ' ')}</span></div><div className="mt-6 flex justify-between text-[11px] text-[#b8aec9]"><span className="flex items-center gap-1"><CalendarDays size={13} />Deadline {project.deadline}</span><span>{project.progress}%</span></div><div className="mt-3 h-2 rounded-full bg-[#0e0917]"><div className="h-2 rounded-full bg-gradient-to-r from-rose-600 to-rose-300" style={{ width: `${project.progress}%` }} /></div></article>)}</div> : <div className={`${card} py-16 text-center text-sm text-[#b8aec9]`}>No projects yet.</div>}</CreatorShell>
+}

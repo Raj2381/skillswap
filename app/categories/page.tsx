@@ -1,0 +1,6 @@
+import Link from 'next/link'
+import { categories } from '@/src/data/mock'
+
+export default function PublicCategories() {
+  return <main className="min-h-screen bg-[#12070B] px-5 py-10 text-[#FFF5F6]"><div className="mx-auto max-w-6xl"><Link href="/" className="text-lg font-semibold">Skill<span className="text-[#D66A84]">Swap</span></Link><div className="mt-16 max-w-2xl"><p className="text-sm uppercase tracking-[0.24em] text-[#D66A84]">Explore skills</p><h1 className="mt-4 text-5xl font-semibold tracking-tight">Whatever you can imagine, someone can create.</h1><p className="mt-5 text-lg leading-8 text-[#C7A7B0]">Browse the creative disciplines and practical skills available across SkillSwap.</p></div><div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{categories.map((category, index) => <Link key={category} href={`/categories/${encodeURIComponent(category)}`} className="rounded-2xl border border-[#3A101C] bg-[#250C14] p-6 transition hover:border-[#A52546]"><span className="text-sm text-[#D66A84]">0{index + 1}</span><h2 className="mt-8 text-xl font-semibold">{category}</h2><p className="mt-2 text-sm text-[#9F8189]">Explore creators and services</p></Link>)}</div><Link href="/signup" className="mt-10 inline-flex rounded-xl bg-[#A52546] px-5 py-3 text-sm font-semibold">Get started</Link></div></main>
+}
