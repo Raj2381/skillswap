@@ -1,20 +1,28 @@
+cat > .gitignore <<'EOF'
 # v0 sandbox internal files
 __v0_runtime_loader.js
 __v0_devtools.tsx
 __v0_jsx-dev-runtime.ts
 .snowflake/
 .v0-trash/
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+
+# Vercel
 .vercel/
 
 # Environment variables
 .env
 .env.local
 .env.*.local
-
-# Common ignores
-node_modules
-.next/
-.DS_Store*.tsbuildinfo
+*.env
+!.env.example
 
 # macOS
 .DS_Store
@@ -22,3 +30,27 @@ node_modules
 
 # TypeScript generated files
 *.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Editor files
+.vscode/
+.idea/
+
+# Misc caches
+.cache/
+.parcel-cache/
+.vite/
+*.tgz
+EOF
