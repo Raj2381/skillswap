@@ -44,11 +44,14 @@ export function CreatorBookingPage({ creatorId }: { creatorId: string }) {
   const submit = async (event: React.FormEvent) => {
     event.preventDefault()
     if (!creator || creator.availability === 'busy' || creator.availability === 'unavailable') return
+    if (!Number.isFinite(Number(form.budget)) || Number(form.budget) <= 0) { setError('Please enter a valid budget.'); return }
+    if (!form.deadline) { setError('Please choose a deadline.'); return }
     if (form.startDate && form.deadline < form.startDate) { setError('Deadline must be on or after the preferred start date.'); return }
     setBusy(true); setError('')
-    const response = await fetch('/api/project-requests', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, creatorId, budget: Number(form.budget) }) })
+    const requestPayload = { ...form, creatorId, budget: Number(form.budget) }
+    const response = await fetch('/api/project-requests', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestPayload) })
     const result = await response.json().catch(() => null)
-    if (!response.ok) { setError(result?.error || 'Unable to send the project request.'); setBusy(false); return }
+    if (!response.ok) { console.error('PROJECT REQUEST CLIENT ERROR:', { responseStatus: response.status, response: result, payload: requestPayload, creatorId }); setError(result?.error || 'Unable to send the project request.'); setBusy(false); return }
     setSent(true); setBusy(false)
   }
 

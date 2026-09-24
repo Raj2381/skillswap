@@ -55,6 +55,15 @@ export function createMissingSupabaseClient() {
         eq: async () => ({ data: null, error: { message: missingMessage } }),
       }
     },
+    insert() {
+      return {
+        select() {
+          return {
+            single: async () => ({ data: null, error: { message: missingMessage } }),
+          }
+        },
+      }
+    },
     upsert: async () => ({ data: null, error: { message: missingMessage } }),
   }
 
