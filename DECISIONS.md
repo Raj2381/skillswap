@@ -1,27 +1,25 @@
 # SkillSwap - Decision Points
 
-The exact hackathon brief and its three Decision Points are not included in this repository or the available project context. They cannot be documented accurately without inventing requirements.
-
-## Decision Point 1
+## Decision Point 1 - Rejection
 
 ### Choice
-Unavailable until the official brief is provided.
+When a creator declines a booking, the booking status changes to `Declined`. The client can still see the declined booking in My Bookings and can return to the marketplace to book another creator or gig.
 
 ### Why
-No source text identifies the first Decision Point. This placeholder is intentionally explicit so the submission does not claim an unverified choice.
+Keeping declined bookings visible gives the client a clear request history. The client is not blocked and can continue discovering other available gigs.
 
-## Decision Point 2
+## Decision Point 2 - Double Booking
 
 ### Choice
-Unavailable until the official brief is provided.
+A gig cannot accept a second conflicting booking while it already has an accepted booking. Pending requests may remain pending until explicitly accepted or declined.
 
 ### Why
-No source text identifies the second Decision Point. Provide the official brief before replacing this section.
+The public demo checks for an existing accepted booking for the same gig before accepting another request. This makes the capacity rule deterministic and prevents conflicting commitments.
 
-## Decision Point 3
+## Decision Point 3 - Discovery
 
 ### Choice
-Unavailable until the official brief is provided.
+Marketplace results are searchable and filterable by category. When no filter is active, gigs are shown newest first; search and category filters narrow the same deterministic dataset.
 
 ### Why
-No source text identifies the third Decision Point. This remains unresolved rather than fabricated.
+Clients can quickly find relevant services while newly published gigs remain discoverable. The behavior is simple to demonstrate and does not invent ratings or reviews.

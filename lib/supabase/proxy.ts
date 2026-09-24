@@ -42,6 +42,11 @@ export async function updateSession(request: NextRequest) {
     pathname === '/categories' ||
     pathname === '/for-creators' ||
     pathname === '/for-clients' ||
+    pathname === '/marketplace' ||
+    pathname === '/bookings' ||
+    pathname === '/creator-demo' ||
+    pathname === '/gigs' ||
+    pathname.startsWith('/gigs/') ||
     pathname === '/login' ||
     pathname === '/signup' ||
     pathname === '/forgot-password' ||

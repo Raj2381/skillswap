@@ -6,28 +6,62 @@ AZIS-U348YE
 
 ## Overview
 
-SkillSwap is a Next.js marketplace connecting clients with authenticated creators through Supabase-backed profiles, gigs, project requests, projects, conversations, and messages.
+SkillSwap is a creator gig marketplace where creators publish services and clients discover and book those services. The authenticated application also supports creator workspaces, project requests, projects, and realtime chat.
 
-## Current Architecture
+The public hackathon demo is isolated from authenticated production records so graders can use the required flow without creating an account.
 
-- Next.js App Router with TypeScript
-- Supabase Auth and PostgreSQL
-- Browser and server Supabase clients using `@supabase/ssr`
-- Realtime subscriptions for requests, projects, notifications, and messages
-- Authenticated creator workspace under `/creator/workspace/*`
-- Client marketplace under `/creators`, `/find-creators`, and `/projects`
+## Five Required Features
 
-## Verified Demo Flow
+### 1. Post a Gig
+Creators can publish gigs with a title, category, rate, and description from `/creator/workspace/post-gig`. The public demo includes seeded gigs for evaluation.
 
-1. Sign in as a client and open `/find-creators`.
-2. Select a creator whose profile is stored in Supabase.
-3. Submit a project request with a deadline and requirements.
-4. Sign in as the assigned creator and open `/creator/workspace/requests`.
-5. Open `/creator/workspace/messages` to exchange persisted realtime messages.
+### 2. Browse & Search
+Open `/marketplace` to browse demo gigs, search by title, creator, category, or description, and filter by category. Results are deterministic and seeded in Supabase.
+
+### 3. Book a Gig
+Open any gig from `/marketplace`, submit a name and requirements, and receive a persisted `Pending` booking confirmation at `/bookings`.
+
+### 4. Creator Dashboard
+Open `/creator-demo` to view public demo bookings and Accept or Decline them. Acceptance is blocked when that gig already has an accepted booking.
+
+### 5. My Bookings
+Open `/bookings` to see persisted Pending, Accepted, and Declined bookings. Declined records remain visible and the marketplace link remains available.
+
+## Decision Points
+
+See [DECISIONS.md](DECISIONS.md) for the implemented Rejection, Double Booking, and Discovery decisions.
+
+## Demo Flow
+
+1. Open `/marketplace` without logging in.
+2. Search for a gig and filter by category.
+3. Open a gig detail page.
+4. Submit a booking.
+5. Open `/bookings` and verify `Pending`.
+6. Open `/creator-demo` and Accept or Decline the booking.
+7. Return to `/bookings` and verify `Accepted` or `Declined`.
+8. Repeat with another booking to demonstrate the double-booking rule.
+
+## Authentication
+
+No account is required to demonstrate the five public hackathon features. The existing authenticated creator/client workspace remains available for the full production workflow.
+
+## Technology
+
+- Next.js App Router
+- TypeScript
+- React
+- Supabase/PostgreSQL
+- Supabase Realtime
+- Tailwind CSS
+
+## Standard API
+
+Not implemented. The application uses its existing Next.js/Supabase APIs rather than a separately implemented hackathon Standard API.
 
 ## Database
 
-The schema links `auth.users` to `profiles`, creator-specific data to `creator_profiles`, services to creators, requests to client and creator IDs, projects to accepted requests, and messages to participant-only conversations. Apply migrations in `supabase/migrations/` in order. The additive `007_hackathon_hardening.sql` migration protects profile roles and enables required realtime tables.
+The public demo uses the additive `demo_gigs` and `demo_bookings` tables from `supabase/migrations/010_hackathon_demo_mode.sql`. Authenticated production data continues to use profiles, creator_profiles, gigs, project_requests, projects, conversations, and messages.
 
 ## Running Locally
 
@@ -36,25 +70,11 @@ npm install
 npm run dev
 ```
 
-Apply the Supabase schema using the project migrations or the consolidated production setup, then configure the environment variables below.
-
-## Environment Variables
+Apply the Supabase migrations, then configure:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-
-## Standard API
-
-Not implemented. The application uses Supabase client APIs, server routes, and database functions rather than a separately documented hackathon Standard API.
-
-## Five Required Features
-
-The repository does not contain the hackathon brief, so the exact five required features cannot be stated without inventing requirements. The currently implemented product capabilities are creator discovery, creator profiles and gigs, project requests, creator request management, projects, and realtime chat.
-
-## Decision Points
-
-The exact three Decision Points are not present in the repository or the available project context. They are recorded as unresolved in [DECISIONS.md](DECISIONS.md) rather than fabricated.
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
 ## Deployment
 
-Deploy the Next.js application to Vercel and configure the documented Supabase environment variables. No production URL is committed because one has not been provided.
+Production URL: TO_BE_FILLED_AFTER_DEPLOYMENT
