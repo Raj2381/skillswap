@@ -77,4 +77,4 @@ Apply the Supabase migrations, then configure:
 
 ## Deployment
 
-Production URL: TO_BE_FILLED_AFTER_DEPLOYMENT
+Production URL: https://skillswap-seven-sigma.vercel.app
