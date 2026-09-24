@@ -11,7 +11,7 @@ const demoClientId = 'demo-client'
 
 export default function GigPage() {
   const { gigId } = useParams<{ gigId: string }>(); const router = useRouter(); const [gig, setGig] = useState<Gig | null>(null); const [form, setForm] = useState({ clientName: '', requirements: '' }); const [loading, setLoading] = useState(true); const [sending, setSending] = useState(false); const [message, setMessage] = useState('')
-  useEffect(() => { createClient().from('demo_gigs').select('*').eq('id', gigId).maybeSingle().then(({ data }) => { setGig(data as Gig | null); setLoading(false) }) }, [gigId])
+  useEffect(() => { const load = async () => { const result = await createClient().from('demo_gigs').select('*').eq('id', gigId).maybeSingle() as { data: Gig | null }; setGig(result.data); setLoading(false) }; void load() }, [gigId])
   const submit = async (event: React.FormEvent) => { event.preventDefault(); setSending(true); setMessage(''); const { error } = await createClient().from('demo_bookings').insert({ gig_id: gigId, client_id: demoClientId, client_name: form.clientName.trim(), requirements: form.requirements.trim() }).select('id').single(); if (error) setMessage('Booking could not be created. Please try again.'); else { setMessage('Booking created. Status: Pending.'); setTimeout(() => router.push('/bookings'), 500) }; setSending(false) }
   if (loading) return <main className="min-h-screen bg-[#12070B] p-10 text-white">Loading gig...</main>
   if (!gig) return <main className="min-h-screen bg-[#12070B] p-10 text-white"><div className={`${card} mx-auto max-w-xl p-10 text-center`}><h1 className="text-2xl font-semibold">Gig not found</h1><Link href="/marketplace" className={`${button} mt-6`}>Back to marketplace</Link></div></main>
