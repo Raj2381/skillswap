@@ -42,32 +42,21 @@ export function isSupabaseConfigured() {
 export function createMissingSupabaseClient() {
   const missingMessage = getSupabaseMissingMessage()
 
-  const queryBuilder = {
-    select() {
-      return this
+  const result = { data: null, error: { message: missingMessage } }
+  const queryBuilder: any = new Proxy(
+    {},
+    {
+      get(_target, prop) {
+        if (prop === 'then') {
+          return (resolve: (value: typeof result) => unknown) => resolve(result)
+        }
+        return () => queryBuilder
+      },
     },
-    eq() {
-      return this
-    },
-    maybeSingle: async () => ({ data: null, error: { message: missingMessage } }),
-    update() {
-      return {
-        eq: async () => ({ data: null, error: { message: missingMessage } }),
-      }
-    },
-    insert() {
-      return {
-        select() {
-          return {
-            single: async () => ({ data: null, error: { message: missingMessage } }),
-          }
-        },
-      }
-    },
-    upsert: async () => ({ data: null, error: { message: missingMessage } }),
-  }
+  )
 
   const auth = {
+    getSession: async () => ({ data: { session: null }, error: null }),
     getUser: async () => ({ data: { user: null }, error: null }),
     signInWithPassword: async () => ({
       data: { user: null },
@@ -78,6 +67,7 @@ export function createMissingSupabaseClient() {
       error: { message: missingMessage },
     }),
     signOut: async () => ({ error: null }),
+    exchangeCodeForSession: async () => ({ data: { session: null }, error: { message: missingMessage } }),
     resetPasswordForEmail: async () => ({ data: null, error: { message: missingMessage } }),
     onAuthStateChange: () => ({
       data: { subscription: { unsubscribe() {} } },
